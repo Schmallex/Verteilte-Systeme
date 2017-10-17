@@ -1,21 +1,36 @@
 package vertSys;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * Created by Alexander Görisch on 10.10.2017.
  */
 public class Main {
-    public static void main(String[] args){
-        Scanner reader = new Scanner(System.in);
-        while (true){
-            System.out.println("Bitte Name/Nummer oder beides(Exit zum schließen)");
-            String s = reader.next();
-            if(s.equals("Exit")|| s.equals("exit")){
-                break;
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (true) {
+                System.out.println("Bitte Name eingeben(Exit zum schließen)");
+                String name = reader.readLine();
+                if (name.equals("Exit") || name.equals("exit")) {
+                    break;
+                }
+                System.out.print("Bitte Nummer eingeben");
+                String nummer = reader.readLine();
+                List<String> ausgabe= Scan.analyse("Name=" + name + "&Nummer=" + nummer);
+                Iterator<String> it = ausgabe.iterator();
+                while (it.hasNext()) {
+                    System.out.println(it.next());
+                }
             }
-            Scan.analyse(s);
+            reader.close();
+        } catch (IOException e) {
         }
-        reader.close();
+
     }
 }

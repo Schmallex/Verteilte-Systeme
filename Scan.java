@@ -1,63 +1,84 @@
 package vertSys;
 
+
+import java.util.ArrayList;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Alexander Görisch on 10.10.2017.
  */
 public class Scan {
     /**
      * Analysiert den gegebenen Input undruft die entsprechenden Suchmethoden auf.
+     *
      * @param s sei ein Eingabestring der aus Nummern und Buchstaben besteht
      */
-    protected static void analyse(String s) {
-        try {
-            int i = Integer.parseInt(s);
-            searchNumber(i);
-        } catch (Exception e) {
-            if (s.matches(".*\\d+.*")) {
-                String[] parts = s.split("_");
-                try {
-                    searchJoin(parts[0], Integer.parseInt(parts[1]));
-                } catch (Exception en) {
-                    searchJoin(parts[1], Integer.parseInt(parts[0]));
-                }
-            } else {
-                searchName(s);
-            }
+    protected static List<String> analyse(String s) {
+        Pattern r = Pattern.compile("(\\d)");
+        Matcher m = r.matcher((s));
+        String se = "";
+        while (m.find()) {
+            se += m.group();
         }
+        String sn = s.substring(s.indexOf("=") + 1, s.indexOf("&"));
+        if (se.equals("") && sn.equals("")) {
+            System.out.println("Bitte etwas eingeben.");
+        } else if (se.equals("")) {
+            return searchName(sn);
+        } else if (sn.equals("")) {
+            return searchNumber(se);
+        } else {
+            return searchJoin(sn, se);
+        }
+        return new ArrayList<String>();
 
     }
 
     /**
      * Startet einen Thread der Im Telefonbuch die gegebene Nummer sucht
+     *
      * @param i sei ein Integer Wert
      */
-    protected static void searchNumber(int i) {
-        Runnable run = new NumThread(i);
-        Thread th = new Thread(run);
+    protected static List<String> searchNumber(String i) {
+        List<String> ausgabe = new ArrayList();
+        Thread th = new NumThread(i, ausgabe);
         th.start();
-
+        try {
+            th.join();
+        } catch (Exception e) {
+        }
+        return ausgabe;
     }
 
     /**
      * Startet einen Thread der im Telefonbuch den gegebenen Namen sucht
+     *
      * @param s sei ein String
      */
-    protected static void searchName(String s) {
-        Runnable run = new StrThread(s);
-        Thread th = new Thread(run);
+    protected static List<String> searchName(String s) {
+        List<String> ausgabe = new ArrayList();
+        Thread th = new StrThread(s, ausgabe);
         th.start();
+        try {
+            th.join();
+        } catch (Exception e) {
+        }
+        return ausgabe;
     }
 
     /**
      * Startet zwei Threads die nebenläufig Im Telefonbuch nach Namen und Nummer suchen
+     *
      * @param s sei ein String
      * @param i sei ein Integer
      */
-    protected static void searchJoin(String s, int i) {
-        Runnable runStr = new StrThread(s);
-        Thread threadStr = new Thread(runStr);
-        Runnable runNum = new NumThread(i);
-        Thread threadNum = new Thread(runNum);
+    protected static List<String> searchJoin(String s, String i) {
+        List ausgabe = new ArrayList();
+        Thread threadStr = new StrThread(s, ausgabe);
+        Thread threadNum = new NumThread(i, ausgabe);
         try {
             threadNum.start();
             threadStr.start();
@@ -67,5 +88,6 @@ public class Scan {
         } catch (Exception e) {
             System.out.println("Thread interrupted");
         }
+        return ausgabe;
     }
 }

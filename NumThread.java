@@ -1,16 +1,21 @@
 package vertSys;
 
+
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Alexander Görisch on 10.10.2017.
  */
-public class NumThread implements Runnable {
-    private int nummer;
+public class NumThread extends Thread {
+    private String nummer;
+    public List<String> ausgabe;
 
-    protected NumThread(int nummer) {
+    protected NumThread(String nummer, List ausgabe) {
         this.nummer = nummer;
+        this.ausgabe = ausgabe;
     }
 
     public void run() {
@@ -20,12 +25,12 @@ public class NumThread implements Runnable {
         while (it.hasNext()) {
             AbstractMap.SimpleEntry entry = it.next();
             if (entry.getValue().equals(nummer)) {
-                System.out.println(entry.getKey() + " " + entry.getValue());
+                ausgabe.add(entry.getKey() + " " + entry.getValue());
                 found = true;
             }
         }
         if (!found) {
-            System.out.println("Kein Eintrag zu " + nummer);
+            ausgabe.add("Kein Eintrag zu " + nummer);
         }
     }
 }
