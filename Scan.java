@@ -24,16 +24,15 @@ public class Scan {
             se += m.group();
         }
         String sn = s.substring(s.indexOf("=") + 1, s.indexOf("&"));
-        if (se.equals("") && sn.equals("")) {
-            System.out.println("Bitte etwas eingeben.");
-        } else if (se.equals("")) {
+        if (se.isEmpty()) {
             return searchName(sn);
-        } else if (sn.equals("")) {
+        }
+        else if (sn.isEmpty()) {
             return searchNumber(se);
-        } else {
+        }
+        else {
             return searchJoin(sn, se);
         }
-        return new ArrayList<String>();
 
     }
 
