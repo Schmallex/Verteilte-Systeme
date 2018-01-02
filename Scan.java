@@ -1,6 +1,8 @@
 package vertSys;
 
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -19,21 +21,40 @@ public class Scan {
     protected static List<String> analyse(String s) {
         Pattern r = Pattern.compile("(\\d)");
         Matcher m = r.matcher((s));
-        String se = "";
+        String number = "";
         while (m.find()) {
-            se += m.group();
+            number += m.group();
         }
-        String sn = s.substring(s.indexOf("=") + 1, s.indexOf("&"));
-        if (se.isEmpty()) {
+        String sn = s.substring(s.indexOf("=") +1, s.indexOf("&num"));
+        sn=decode(sn);
+         number = s.substring(s.indexOf("nummer=")+7,s.indexOf("&C"));
+        if(number.isEmpty()&& sn.isEmpty()){
+            List<String> ausgabe = new ArrayList();
+            ausgabe.add("Leere Suche");
+            return ausgabe;
+        }
+        else if (number.isEmpty()) {
             return searchName(sn);
         }
         else if (sn.isEmpty()) {
-            return searchNumber(se);
+            return searchNumber(number);
         }
         else {
-            return searchJoin(sn, se);
+            return searchJoin(sn, number);
         }
 
+    }
+    public static String decode(String s){
+
+        String d= s;
+        d =d.replace("%C4","Ä");
+        d =d.replace("%E4","ä");
+        d =d.replace("%D6","Ö");
+        d =d.replace("%F6","ö");
+        d =d.replace("%DC","Ü");
+        d =d.replace("%FC","ü");
+        d=d.replace("%20"," ");
+        return d;
     }
 
     /**
@@ -75,9 +96,10 @@ public class Scan {
      * @param i sei ein Integer
      */
     protected static List<String> searchJoin(String s, String i) {
-        List ausgabe = new ArrayList();
-        Thread threadStr = new StrThread(s, ausgabe);
-        Thread threadNum = new NumThread(i, ausgabe);
+        List numAusgabe = new ArrayList();
+        List strAusgabe = new ArrayList();
+        Thread threadStr = new StrThread(s, strAusgabe);
+        Thread threadNum = new NumThread(i, numAusgabe);
         try {
             threadNum.start();
             threadStr.start();
@@ -87,6 +109,7 @@ public class Scan {
         } catch (Exception e) {
             System.out.println("Thread interrupted");
         }
-        return ausgabe;
+        strAusgabe.addAll(numAusgabe);
+        return strAusgabe;
     }
 }
