@@ -35,7 +35,7 @@ public class StrThread extends Thread {
             }
             running = false;
             if (!found) {
-                ausgabe.add("Kein Eintrag zu " + name);
+                ausgabe.add("Kein Eintrag zu " + encode(name));
             }
         }
     }

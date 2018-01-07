@@ -99,8 +99,8 @@ public class Server {
                 out.write("<h3>Nach Name,Nummer oder beidem suchen</h3>");
                 out.write("<form method=get action='" + http + "'");
                 out.write("<table>");
-                out.write("<tr> <td valign=top>Name:</td>    <td><input name=name></td>    <td></td> </tr>");
-                out.write("<tr> <td valign=top>Nummer:</td> <td><input name=nummer></td>    <td></td> </tr>");
+                out.write("<tr> <td valign=top>Name:</td>    <td><input name=name pattern='[a-zA-Z &auml; &Auml; &ouml; &Ouml &uuml &Uuml &szlig;]+'></td>    <td></td> </tr>");
+                out.write("<tr> <td valign=top>Nummer:</td> <td><input name=nummer pattern ='[0-9]+'></td>    <td></td> </tr>");
                 out.write("<tr> <td valign=top><input type=submit name=C value=Suchen></td>");
                 out.write("<td><input type=reset></td>");
                 out.write("<td><input type=submit name=D value=\"Server beenden\" ></td> </tr>");

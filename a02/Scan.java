@@ -33,55 +33,25 @@ public class Scan {
         if (number.isEmpty() && name.isEmpty()) {
             return error;
         } else if (number.isEmpty()) {
-            if (!name(name)) {
-                error.add(name);
+            if(name.matches("[ ]+")){
                 return error;
             }
             return searchName(name);
         } else if (name.isEmpty()) {
-            if (!nummer(number)) {
-                error.add(number);
-                return error;
-            }
+
             return searchNumber(number);
         } else {
-            if (!nummer(number)) {
-                error.add(number);
-                return error;
-            }
-            if (!name(name)) {
-                error.add(name);
-                return error;
-            }
+
             return searchJoin(name, number);
         }
 
     }
 
-    public static boolean name(String s) {
-
-        if (!s.isEmpty() && !s.matches("[ ]+")) {//Test ob Name valide
-            if (!s.matches("[a-zA-ZäöüßÄÖÜ ]+")) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean nummer(String s) {
-
-        if (!s.isEmpty() && !s.matches("[0-9]+")) {//Test ob Name valide
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     public static String decode(String s) {
 
         String d = s;
+
         d = d.replace("%C4", "Ä");
         d = d.replace("%E4", "ä");
         d = d.replace("%D6", "Ö");
@@ -89,6 +59,7 @@ public class Scan {
         d = d.replace("%DC", "Ü");
         d = d.replace("%FC", "ü");
         d = d.replace("+", " ");
+
         return d;
     }
 
@@ -128,10 +99,6 @@ public class Scan {
      */
     protected static List<String> searchName(String s) {
         List<String> ausgabe = new ArrayList();
-        if (!name(s)) {
-            ausgabe.add("Invalide Eingabe " + s);
-            return ausgabe;
-        }
         Thread th = new StrThread(s, ausgabe);
         th.start();
         try {
